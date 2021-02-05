@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import play.api.mvc._
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.auth.core.{InsufficientEnrolments, MissingBearerToken}
+import uk.gov.hmrc.auth.core.{AuthorisationException, InsufficientEnrolments, MissingBearerToken, NoActiveSession, SessionRecordNotFound}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.urls.Link
@@ -89,8 +89,8 @@ abstract class BaseController @Inject()(cc: MessagesControllerComponents)(implic
       case b: BadGatewayException =>
         logger.warn(s"BadGatewayException:${b.getMessage}")
         Future.successful(Redirect(controllers.routes.ClientErrorController.getTechnicalError()))
-      case m: MissingBearerToken =>
-        logger.warn(s"MissingBearerToken:${m.getMessage}")
+      case n: NoActiveSession =>
+        logger.warn(s"No Active session:${n.getMessage}")
         Future.successful(ggSignInRedirect)
       case e =>
         logger.error(s"Exception thrown:${e.getMessage}")

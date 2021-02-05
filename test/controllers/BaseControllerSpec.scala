@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -211,21 +211,21 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
     "The deceased flag is true" in new HappyPathSetup {
 
       val json: JsValue = loadFile("/json/model/api/personDeceasedTrue.json")
-      val hr = HttpResponse(OK, Some(json), Map.empty)
+      val hr = HttpResponse(OK, Some(json), Map.empty, None)
       await(controller.retrieveCitizenDetails(randomNino, Future(hr))) shouldBe Left(GONE)
     }
 
     "The deceased flag is false" in new HappyPathSetup with PersonFixture {
 
       val json: JsValue = loadFile("/json/model/api/personDeceasedFalse.json")
-      val hr = HttpResponse(OK, Some(json), Map.empty)
+      val hr = HttpResponse(OK, Some(json), Map.empty, None)
       await(controller.retrieveCitizenDetails(randomNino, Future(hr))) shouldBe Right(person.get)
     }
 
     "The deceased flag is not given" in new HappyPathSetup {
 
       val json: JsValue = loadFile("/json/model/api/personDeceasedNoValue.json")
-      val hr = HttpResponse(OK, Some(json), Map.empty)
+      val hr = HttpResponse(OK, Some(json), Map.empty, None)
       val person = Person(Some("first name"), Some("second name"), None)
       await(controller.retrieveCitizenDetails(randomNino, Future(hr))) shouldBe Right(person)
     }
